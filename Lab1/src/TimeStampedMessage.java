@@ -1,4 +1,8 @@
-
+/**
+ * 
+ * @author Team 3
+ *
+ */
 public class TimeStampedMessage extends Message{
 	Integer timeStamp;
 	int[] timeStamps;
@@ -25,10 +29,10 @@ public class TimeStampedMessage extends Message{
 	}
 	
 	public void setTimeStamp(int t,int i){
-		this.timeStamp = t;
-		
 		if(clock_type.equals("vector")){
-			timeStamps[id] = t;
+			timeStamps[i] = t;
+		} else {
+		    throw new RuntimeException("")
 		}
 	}
 	public void setTimeStamp(int t){

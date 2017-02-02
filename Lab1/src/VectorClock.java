@@ -2,60 +2,79 @@ import java.util.*;
 public class VectorClock implements ClockService {
 	private int[] times;
 	private int id;
-	VectorClock(int size, int i){
+	/**
+	 * Constructor.
+	 * @param size size of vector
+	 * @param i my own id
+	 */
+	public VectorClock(int size, int i){
 		times = new int[size];
 		id = i;
 	}
+	/**
+	 * Increments the time in its own position in array.
+	 */
 	@Override
 	public void increment() {
-		// TODO Auto-generated method stub
-		times[id]++;
+		(this.times[id])++;
+		return;
 	}
-
+	/**
+     * Returns time in my own position in array.
+     */
 	@Override
 	public Integer getTimeStamp() {
-		// TODO Auto-generated method stub
 		return times[id];
-		
 	}
-
-
-
+	/**
+	 * Synchronizes all its vector array.
+	 */
 	@Override
 	public void Synchronize(TimeStampedMessage msg) {
-		// TODO Auto-generated method stub
-		for (int i = 0; i<times.length;i++){
+		for (int i = 0; i < times.length; i++){
 			times[i] = Math.max(msg.getTimeStamp(i),times[i]);
-			
 		}
+		//increments after taking the maximum value
 		times[id]++;
+		return;
 	}
+	/**
+	 * Gets ith element's time stamp.
+	 */
 	@Override
 	public Integer getTimeStamp(int i) {
-		// TODO Auto-generated method stub
 		return times[i];
-		
 	}
+	/**
+	 * vector clock doesn't need this method.
+	 * if accidentally used, throw an exception.
+	 */
 	@Override
-	/*vector clock doesn't need this method.*/
 	public int compare(int m1, int m2) {
-		// TODO Auto-generated method stub
-		return 0;
+	    throw new RuntimeException("error in VectorClock class's compare method");
 	}
+	/**
+	 * Returns:
+	 * flag = 1; m1 > m2;
+	 * flag = 0; m1 and m2 can not be compared;
+	 * flag = -1; m1 < m2;
+	 * 
+	 */
 	@Override
 	public int compare(int[] m1, int[] m2) {
-		// TODO Auto-generated method stub
 		int flag = 0;
-		for (int i = 0;i<m1.length;i++){
-			if(flag==1 && m1[i]<m2[i]) return 0;
-			if(flag == -1 && m1[i]>m2[i]) return 0;
-			if(flag == 0 && m1[i]<m2[i]){
-				flag = -1;
+		for (int i = 0;i < m1.length; i++){
+			if(flag == 1 && m1[i] < m2[i]) {
+			    return 0;
 			}
-			else if (flag == 0 && m1[i]>m2[i]){
+			if(flag == -1 && m1[i] > m2[i]) {
+			    return 0;
+			}
+			if(flag == 0 && m1[i] < m2[i]){
+				flag = -1;
+			} else if (flag == 0 && m1[i] > m2[i]){
 				flag = 1;
 			}
-			
 		}
 		return flag;
 	}

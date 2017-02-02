@@ -1,5 +1,8 @@
-
-
+/**
+ * 
+ * @author Team 3
+ *
+ */
 public class LogicalClock implements ClockService {
 	private int time = 1;
 	@Override
