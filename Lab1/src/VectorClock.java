@@ -59,5 +59,4 @@ public class VectorClock implements ClockService {
 		}
 		return flag;
 	}
-
 }
