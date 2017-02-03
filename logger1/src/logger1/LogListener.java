@@ -10,9 +10,9 @@ public class LogListener implements Runnable {
     /** log's name. */
     private String logName;
     private Queue<TimeStampedMessage> listenQueue;
-    public LogListener(String Name, Queue<TimeStampedMessage> receiveQueue) {
+    public LogListener(String Name, Queue<TimeStampedMessage> Q) {
         this.logName = Name;
-        this.listenQueue = receiveQueue;
+        this.listenQueue = Q;
     }
     
     @SuppressWarnings("resource")
@@ -20,7 +20,7 @@ public class LogListener implements Runnable {
     public void run() {
         try {
             System.out.println("[log is listening...]");
-            ServerSocket listener = new ServerSocket(916820);
+            ServerSocket listener = new ServerSocket(16820);
             while (true) {
                 Socket socket = null;
                 try {
@@ -28,7 +28,7 @@ public class LogListener implements Runnable {
                     System.out.println("[log accepts connection from" + 
                             socket.getRemoteSocketAddress().toString() + " " + socket.getPort() + "]");
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                    Thread listenFor = new Thread(new LogListenFor(ois, listenQueue));
+                    Thread listenFor = new Thread(new LogListenFor(ois, this.listenQueue));
                     listenFor.start();
                 } catch (IOException e) {
                     if (socket != null) {

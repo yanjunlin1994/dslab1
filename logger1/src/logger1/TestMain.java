@@ -12,7 +12,6 @@ public class TestMain {
 	    while (true){
 	        InputStreamReader isrd = new InputStreamReader(System.in);
 	        BufferedReader br = new BufferedReader(isrd);
-	        
 	        try {
 	            String input = br.readLine();
 	            if (input.equals("p")) {

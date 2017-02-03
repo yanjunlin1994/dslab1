@@ -10,10 +10,11 @@ public class Logger {
 		this.messageList = new ArrayList<TimeStampedMessage>();
 		this.messageQueue = new ArrayDeque<TimeStampedMessage>();
 		this.clockType = ct;
+		Thread listner = new Thread(new LogListener(myname, messageQueue));
+		listner.start(); 
 	}
-	public void print(){
-		while (!this.messageQueue.isEmpty()){
-			
+	public synchronized void print(){
+		while (!this.messageQueue.isEmpty()){	
 			messageList.add(this.messageQueue.poll());
 		}
 		if (messageList.size() > 0) {
