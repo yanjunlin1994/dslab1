@@ -21,6 +21,7 @@ public class Configuration {
 	HashMap<String,Node> nodeMap = new HashMap<String,Node>();
 	HashMap<String,ObjectOutputStream> OSMap = new HashMap<String,ObjectOutputStream>();
 	ObjectOutputStream LoggerOS;
+	Node lgr = null;
 	/**
 	 * Configuration constructor based on configuration file.
 	 * @param config_fileName configuration file
@@ -39,7 +40,12 @@ public class Configuration {
 		for (HashMap<String, Object> node : nodes){
 			Node newNode = new Node((String)node.get("name"), (int)node.get("port"), 
 			                       (String)node.get("ip"));
-			nodeMap.put((String)node.get("name"),newNode);
+			if (newNode.get_name().equals("Logger")) {
+			    this.lgr = newNode;
+			} else {
+			    nodeMap.put((String)node.get("name"),newNode);
+			}
+			
 		}
 		List<HashMap<String, Object>> sRules = (List<HashMap<String, Object>> )data.get("sendRules");
 		for (HashMap<String,Object> rule : sRules){
@@ -102,4 +108,7 @@ public class Configuration {
 	public void set_LoggerOS(ObjectOutputStream os){
 		this.LoggerOS = os;
 	}
+	public Node getLogger(){
+        return this.lgr;
+    }
 }
