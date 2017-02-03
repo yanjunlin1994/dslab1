@@ -19,39 +19,12 @@ public class LogListenFor implements Runnable{
             try {
                 TimeStampedMessage newMes = (TimeStampedMessage)ois.readObject();
                 senderName = newMes.get_source();
-                String checkResult = checkReceiveRule(newMes,myConfig);
-                if (checkResult != null) {
-                    if (checkResult.equals("drop")) {
-                        continue;
-                    } else if (checkResult.equals("delay")) {
-                        listenDelayQueue.offer(newMes);   
-                    } else if (checkResult.equals("duplicate")) {
-                        listenQueue.offer(newMes);
-                        listenQueue.offer((TimeStampedMessage)newMes.clone());
-                        while (!listenDelayQueue.isEmpty()){
-                            TimeStampedMessage msg = listenDelayQueue.poll();
-                            listenQueue.offer(msg);
-                        }
-                        
-                    } 
-                    else {
-                        System.out.println("[ATTENTION] abnormal checkResult" + checkResult); 
-                    }
-                }
-                else {
-                    listenQueue.offer(newMes);
-                    while (!listenDelayQueue.isEmpty()){
-                        TimeStampedMessage msg = listenDelayQueue.poll();
-                        listenQueue.offer(msg);
-                    }
-               
-                }
+                listenQueue.offer(newMes);
             } catch (IOException | ClassNotFoundException e) {
                 if (ois != null) {
                     try {
                         System.out.println("close the object input stream and the socket");
                         ois.close(); 
-                        myConfig.OSMap.remove(senderName);
                         return;
                     } catch (Exception nestedE) {
                         nestedE.printStackTrace();   
