@@ -20,6 +20,7 @@ public class Configuration {
 	ArrayList<Rule> receiveRules = new ArrayList<Rule>();
 	HashMap<String,Node> nodeMap = new HashMap<String,Node>();
 	HashMap<String,ObjectOutputStream> OSMap = new HashMap<String,ObjectOutputStream>();
+	ObjectOutputStream LoggerOS;
 	/**
 	 * Configuration constructor based on configuration file.
 	 * @param config_fileName configuration file
@@ -95,4 +96,10 @@ public class Configuration {
         OSMap.put(dest, oos);
         return;
     }
+	public ObjectOutputStream get_LoggerOS(){
+		return this.LoggerOS;
+	}
+	public void set_LoggerOS(ObjectOutputStream os){
+		this.LoggerOS = os;
+	}
 }

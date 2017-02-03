@@ -194,6 +194,50 @@ public class MessagePasser {
             }   
         }   
     }
+	private void sendToLog(TimeStampedMessage newMes) {
+	    ;
+	    if (newMes == null) {
+	        System.out.println("Message is empty, can't send it");
+	        return;
+	    }
+        ObjectOutputStream os = null;
+        os = myConfig.get_LoggerOS();
+        if (os != null) {
+            try {
+            //    System.out.println("[MessagePasser class: send function: using exsiting output stream.]");
+            //    System.out.println("message to be send is:" + newMes);
+                os.writeObject(newMes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //System.out.println("[MessagePasser class: send function: create new output stream...]");
+            //Node me = myConfig.getNode(myName);
+            //Node he = myConfig.getNode(newMes.get_dest());
+            Socket sck = null;
+            try {
+                sck = new Socket("localhost",16820);
+//                sck = new Socket("localhost", he.get_port());
+                //System.out.println("succeed");
+                os = new ObjectOutputStream(sck.getOutputStream());
+                myConfig.set_LoggerOS(os);
+                //myConfig.add_OSMap(newMes.get_dest(), os);
+                //System.out.println("message to be send is:" + newMes);
+                os.writeObject(newMes);
+            } catch (IOException e) {
+                if (sck != null) {
+                    try {
+                        sck.close();
+                    } catch (Exception nestedE) {
+                        nestedE.printStackTrace();   
+                    }
+                } else {
+                    e.printStackTrace();
+                }
+                
+            }   
+        }   
+    }
 	/**
 	 * check input message against rules in rule list.
 	 * @return actions should be taken.
