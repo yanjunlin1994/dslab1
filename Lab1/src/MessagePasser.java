@@ -211,7 +211,9 @@ public class MessagePasser {
             Socket sck = null;
             try {
                 //TODO:load the log information in configuration
-                sck = new Socket("localhost",16820);
+            	String log_IP = myConfig.getNode("Logger").get_ip();
+            	int log_port = myConfig.getNode("Logger").get_port();
+                sck = new Socket(log_IP,log_port);
                 os = new ObjectOutputStream(sck.getOutputStream());
                 myConfig.set_LoggerOS(os);
                 os.writeObject(newMes);
