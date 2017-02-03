@@ -31,7 +31,7 @@ public class CompareByTimeStamp implements Comparator<TimeStampedMessage>{
         else {
             int m1 = msg1.getTimeStamp();
             int m2 = msg2.getTimeStamp();
-            return m1 - m2;
+            return Integer.compare(m1, m2);
         }
     }
 

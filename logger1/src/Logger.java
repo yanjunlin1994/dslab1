@@ -37,6 +37,13 @@ public class Logger {
         }
         if (messageList.size() > 0) {
             Collections.sort(messageList, new CompareByTimeStamp());
+            Iterator<TimeStampedMessage> itr = messageList.iterator();
+            System.out.println("----------log's sorted file list---------");
+            while (itr.hasNext()) {
+                System.out.println(itr.next());
+            }
+            System.out.println("---------log's sorted file list end----------");
         }
+        
     }
 }
