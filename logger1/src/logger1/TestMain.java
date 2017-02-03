@@ -12,10 +12,13 @@ public class TestMain {
 	    while (true){
 	        InputStreamReader isrd = new InputStreamReader(System.in);
 	        BufferedReader br = new BufferedReader(isrd);
-	        String input = br.readLine();
+	        
 	        try {
+	            String input = br.readLine();
 	            if (input.equals("p")) {
 	                log.print();
+	            } else {
+	                continue;
 	            }
 		    } catch(Exception e) {
 	            e.printStackTrace();

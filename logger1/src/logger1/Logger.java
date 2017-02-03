@@ -11,10 +11,10 @@ public class Logger {
 		this.messageQueue = new ArrayDeque<TimeStampedMessage>();
 		this.clockType = ct;
 	}
-	public void print(Queue<TimeStampedMessage> q){
-		while (!q.isEmpty()){
+	public void print(){
+		while (!this.messageQueue.isEmpty()){
 			
-			messageList.add(q.poll());
+			messageList.add(this.messageQueue.poll());
 		}
 		if (messageList.size() > 0) {
 		    Collections.sort(messageList, new CompareByTimeStamp());
