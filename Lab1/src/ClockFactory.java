@@ -5,18 +5,17 @@
 public class ClockFactory {
 	private MessagePasser mp;
 	public ClockFactory(MessagePasser m){
-		mp = m;
+		this.mp = m;
 	}
-	public ClockService getClockService(){
-		if (mp.getClock().equals("logical")){
+	public ClockService getClockService() {
+		if (mp.getClock().equals("logical")) {
 			return new LogicalClock();
 		}
-		else if (mp.getClock().equals("vector")){
-			return new VectorClock(mp.getSize(),mp.getId());
+		else if (mp.getClock().equals("vector")) {
+			return new VectorClock(mp.getSize(), mp.getId());
 		}
-		else{
-			System.out.println("Can't set clock type");
-			return null;
+		else {
+			throw new RuntimeException("clock type error");
 		}
 	}
 }

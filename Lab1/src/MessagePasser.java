@@ -36,28 +36,30 @@ public class MessagePasser {
 	 * start listening on a new thread.
 	 */
 	public MessagePasser(String configuration_filename, String local_name, String clock_name) {
-	    myName = local_name;
-	    myClock = clock_name;
-	    sendDelayQueue = new ArrayDeque<Message>(10);
-	    receiveQueue = new LinkedList<Message>();
-	    receiveDelayQueue = new ArrayDeque<Message>(10);
-		myConfig = new Configuration(configuration_filename);
-		size = myConfig.get_NodeMap().keySet().size();
+	    this.myName = local_name;
+	    this.myClock = clock_name;
+	    this.sendDelayQueue = new ArrayDeque<Message>(10);
+	    this.receiveQueue = new LinkedList<Message>();
+	    this.receiveDelayQueue = new ArrayDeque<Message>(10);
+		this.myConfig = new Configuration(configuration_filename);
+		this.size = myConfig.get_NodeMap().keySet().size();
 		int counter = 0;
-		for (String name : myConfig.get_NodeMap().keySet()){
+		//TODO:
+		for (String name : myConfig.get_NodeMap().keySet()) {
 			if (name.equals(local_name)){
-				id = counter;
+				this.id = counter;
+				System.out.println("MY ID: " + this.id);
 				break;
 			}
 			counter++;
 		}
+		/* Use the clock factory to generate clock service. */
+        ClockFactory factory = new ClockFactory(this);
+        this.clockservice = factory.getClockService();
+        
 		Thread listen = new Thread(new Listener(myConfig, myName, receiveQueue, receiveDelayQueue));
-		/*Use the clock factory to generate clock service.*/
-		ClockFactory factory = new ClockFactory(this);
-		clockservice = factory.getClockService();
-		
 		listen.start(); 
-		Thread receive = new Thread(new Receive(receiveQueue,clockservice));
+		Thread receive = new Thread(new Receive(receiveQueue, clockservice));
 		receive.start(); 
 	}
 	public void runNow(){
@@ -216,12 +218,12 @@ public class MessagePasser {
 	    return null;
 	}
 	public String getClock(){
-		return myClock;
+		return this.myClock;
 	}
 	public int getSize(){
-		return size;
+		return this.size;
 	}
 	public int getId(){
-		return id;
+		return this.id;
 	}
 }

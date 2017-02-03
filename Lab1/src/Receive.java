@@ -8,7 +8,7 @@ public class Receive implements Runnable{
     private Queue<Message> receiveQueue;
     private ClockService clockservice;
     
-    public Receive(Queue<Message> receiveQ,ClockService cs) {
+    public Receive(Queue<Message> receiveQ, ClockService cs) {
         this.receiveQueue = receiveQ;
         this.clockservice = cs;
     }
@@ -18,7 +18,11 @@ public class Receive implements Runnable{
         try {
             while (true) {
                 try {
-                    Message receMes = receive();
+                    TimeStampedMessage receMes = receive();
+                    if (receMes != null) {
+                        System.out.println("[Receive] receive from queue: ");
+                        System.out.println(receMes.toString());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } 
@@ -27,13 +31,11 @@ public class Receive implements Runnable{
             e.printStackTrace();
         } 
     }  
-    public synchronized Message receive(){
-        Message msg = null;
+    public synchronized TimeStampedMessage receive(){
+        TimeStampedMessage msg = null;
         if (!receiveQueue.isEmpty()){
-            System.out.println("[Receive] polling something from receive queue");
-            msg = receiveQueue.poll();
-            clockservice.Synchronize((TimeStampedMessage)msg);
-            System.out.println("[Receive] receive from queue" + msg);
+            msg = (TimeStampedMessage) receiveQueue.poll();
+            this.clockservice.Synchronize((TimeStampedMessage) msg);
         }
         return msg;
     }
