@@ -8,16 +8,15 @@ import java.util.*;
 public class TestMain {
 	public static void main(String args[]){
 		String clockType = args[0];
-	    Logger log = new Logger(clockType);
+	    Logger log = new Logger("myLog1", clockType);
 	    while (true){
 	        InputStreamReader isrd = new InputStreamReader(System.in);
 	        BufferedReader br = new BufferedReader(isrd);
 	        String input = br.readLine();
 	        try {
-
-	        if (input.equals("p")){
-	        	log.print();
-	        }
+	            if (input.equals("p")) {
+	                log.print();
+	            }
 		    } catch(Exception e) {
 	            e.printStackTrace();
 	        } 
