@@ -1,13 +1,14 @@
 package logger1;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * 
  * @author Team 3
  *
  */
-public class TimeStampedMessage extends Message{
+public class TimeStampedMessage extends Message implements Comparator<TimeStampedMessage>{
     /** logical timeStamp. */
 	private int timeStamp;
 	/** vector timeStamp. */
