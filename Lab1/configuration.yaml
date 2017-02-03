@@ -1,4 +1,4 @@
-# Defines which nodes are used in the system and how to connect to them.
+﻿# Defines which nodes are used in the system and how to connect to them.
 # All names must be unique.
 # No other nodes are known.
 # These names will be used for src and dest addresses for the Message

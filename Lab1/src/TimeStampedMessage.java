@@ -17,6 +17,7 @@ public class TimeStampedMessage extends Message{
 	private int size;
 	/** my index in array */
 	private int id;
+	private boolean ifLog;
 	
 	/**
 	 * Constructor using Message class's contructor.
@@ -141,6 +142,14 @@ public class TimeStampedMessage extends Message{
                 + "[NO." + this.get_seqNum() + "]" + "[source]"+ this.get_source() + " [dest]"+ this.get_dest() 
                 + " [kind]"+ this.get_kind() + " [content]" + this.get_payload();
     }
+	public void set_log(String t){
+		if (t.equals("T")){
+			this.ifLog = true;
+		}
+	}
+	public boolean get_log(){
+		return ifLog;
+	}
 
 	
 
