@@ -33,7 +33,7 @@ public class Logger {
     }
     public synchronized void print(){
         while (!this.messageQueue.isEmpty()){   
-            messageList.add(this.messageQueue.poll());
+            this.messageList.add(this.messageQueue.poll());
         }
         if (messageList.size() > 0) {
             Collections.sort(messageList, new CompareByTimeStamp());
@@ -41,8 +41,9 @@ public class Logger {
             int i = 0;
             int j = 1;
             boolean ifC = false;
+            boolean ifbefC = false;
             while (i < messageList.size() - 1) {
-                while (ifConcurrVec(messageList.get(i), messageList.get(j))) {
+                while ((j < messageList.size()) && (ifConcurr(this.clockType, messageList.get(i), messageList.get(j)))) {
                     ifC = true;
                     if (j - i == 1) {
                         System.out.println(">>>>>>>>concurrent>>>>>>>>>");
@@ -51,18 +52,23 @@ public class Logger {
                     System.out.println(messageList.get(j));
                     j++;
                 }
-                if (ifC = true) {
+                if (ifC == true) {
                     i = j;
                     j++;
                     System.out.println("<<<<<<<<concurrent<<<<<<<<");
                     ifC = false;
+                    ifbefC = true;
                 } else {
+                    ifbefC = false;
                     System.out.println(messageList.get(i));
                     i++;
                     j++;
                 }
-                
             }
+            if (!ifbefC) {
+                System.out.println(messageList.get(i));
+            }
+            
             
 //            Iterator<TimeStampedMessage> itr = messageList.iterator();
 //            System.out.println("----------log's sorted file list---------");
@@ -73,23 +79,30 @@ public class Logger {
         }
         
     }
-    private boolean ifConcurrVec(TimeStampedMessage t1, TimeStampedMessage t2) {
-        int[] m1 = t1.getTimeStamps();
-        int[] m2 = t2.getTimeStamps();
-        int flag = 0;
-        for (int i = 0; i < m1.length; i++) {
-            if(flag == 1 && m1[i] < m2[i]) {
-                return true;
+    private boolean ifConcurr(String clockt, TimeStampedMessage t1, TimeStampedMessage t2) {
+        if (clockt.equals("vector")) {
+            int[] m1 = t1.getTimeStamps();
+            int[] m2 = t2.getTimeStamps();
+            int flag = 0;
+            for (int i = 0; i < m1.length - 1; i++) {
+                if(flag == 1 && m1[i] < m2[i]) {
+                    return true;
+                }
+                if(flag == -1 && m1[i] > m2[i]) {
+                    return true;
+                }
+                if(flag == 0 && m1[i] < m2[i]) {
+                    flag = -1;
+                } else if (flag == 0 && m1[i] > m2[i]){
+                    flag = 1;
+                }
             }
-            if(flag == -1 && m1[i] > m2[i]) {
-                return true;
-            }
-            if(flag == 0 && m1[i] < m2[i]) {
-                flag = -1;
-            } else if (flag == 0 && m1[i] > m2[i]){
-                flag = 1;
-            }
+            return false; 
+        } else {
+            int ma = t1.getTimeStamp();
+            int mb = t2.getTimeStamp();
+            return ((ma == mb)? true: false);
         }
-        return false;
+        
     }
 }
