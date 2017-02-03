@@ -20,7 +20,7 @@ public class LogListener implements Runnable {
     public void run() {
         try {
             System.out.println("[" + this.logName + " is listening...]");
-            ServerSocket listener = new ServerSocket(916820);
+            ServerSocket listener = new ServerSocket(16820);
             while (true) {
                 Socket socket = null;
                 try {

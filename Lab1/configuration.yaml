@@ -5,10 +5,10 @@
 # The local node’s name is included in this list
 configuration :
 - name : alice
-  ip   : 128.237.207.118
+  ip   : 128.237.191.131
   port : 12344
 - name : bob
-  ip   : 128.237.163.117
+  ip   : 128.237.220.225
   port : 14255
 - name : charlie
   ip   : 128.237.207.118
@@ -33,16 +33,16 @@ sendRules :
     kind   : Reply
     src    : daphnie
     seqNum : 6
-  - action : delay # 
+  - action : delay #
     kind   : det
     src    : bob
     dest   : alice
     seqNum : 3
-  - action : duplicate # 
+  - action : duplicate #
     dest   : bob
     src    : charlie
     seqNum : 7
-  - action : duplicate # 
+  - action : duplicate #
     kind   : dup
     src    : bob
     dest   : alice
@@ -63,7 +63,7 @@ receiveRules :
     seqNum : 3
   - action : drop
     src : charlie
-    seqNum : 7 
+    seqNum : 7
     duplicate : True
   - action : delay
     seqNum : 5
