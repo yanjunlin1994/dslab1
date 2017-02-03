@@ -201,7 +201,7 @@ public class MessagePasser {
         }   
     }
 	private void sendToLog(TimeStampedMessage newMes) {
-	    ;
+	    
 	    if (newMes == null) {
 	        System.out.println("Message is empty, can't send it");
 	        return;
