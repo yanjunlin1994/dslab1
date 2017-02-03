@@ -19,6 +19,8 @@ public class LogListenFor implements Runnable{
             try {
                 TimeStampedMessage newMes = (TimeStampedMessage)ois.readObject();
                 senderName = newMes.get_source();
+                System.out.println("New log file add! --");
+                System.out.println(newMes.toString()); 
                 listenQueue.offer(newMes);
             } catch (IOException | ClassNotFoundException e) {
                 if (ois != null) {
