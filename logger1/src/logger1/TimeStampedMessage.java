@@ -8,7 +8,7 @@ import java.util.Comparator;
  * @author Team 3
  *
  */
-public class TimeStampedMessage extends Message implements Comparator<TimeStampedMessage>{
+public class TimeStampedMessage extends Message {
     /** logical timeStamp. */
 	private int timeStamp;
 	/** vector timeStamp. */
