@@ -37,13 +37,59 @@ public class Logger {
         }
         if (messageList.size() > 0) {
             Collections.sort(messageList, new CompareByTimeStamp());
-            Iterator<TimeStampedMessage> itr = messageList.iterator();
-            System.out.println("----------log's sorted file list---------");
-            while (itr.hasNext()) {
-                System.out.println(itr.next());
+            //TODO:CLOCK TYPE
+            int i = 0;
+            int j = 1;
+            boolean ifC = false;
+            while (i < messageList.size() - 1) {
+                while (ifConcurrVec(messageList.get(i), messageList.get(j))) {
+                    ifC = true;
+                    if (j - i == 1) {
+                        System.out.println(">>>>>>>>concurrent>>>>>>>>>");
+                        System.out.println(messageList.get(i));
+                    }
+                    System.out.println(messageList.get(j));
+                    j++;
+                }
+                if (ifC = true) {
+                    i = j;
+                    j++;
+                    System.out.println("<<<<<<<<concurrent<<<<<<<<");
+                    ifC = false;
+                } else {
+                    System.out.println(messageList.get(i));
+                    i++;
+                    j++;
+                }
+                
             }
-            System.out.println("---------log's sorted file list end----------");
+            
+//            Iterator<TimeStampedMessage> itr = messageList.iterator();
+//            System.out.println("----------log's sorted file list---------");
+//            while (itr.hasNext()) {
+//                System.out.println(itr.next());
+//            }
+//            System.out.println("---------log's sorted file list end----------");
         }
         
+    }
+    private boolean ifConcurrVec(TimeStampedMessage t1, TimeStampedMessage t2) {
+        int[] m1 = t1.getTimeStamps();
+        int[] m2 = t2.getTimeStamps();
+        int flag = 0;
+        for (int i = 0; i < m1.length; i++) {
+            if(flag == 1 && m1[i] < m2[i]) {
+                return true;
+            }
+            if(flag == -1 && m1[i] > m2[i]) {
+                return true;
+            }
+            if(flag == 0 && m1[i] < m2[i]) {
+                flag = -1;
+            } else if (flag == 0 && m1[i] > m2[i]){
+                flag = 1;
+            }
+        }
+        return false;
     }
 }
