@@ -83,7 +83,9 @@ public class MessagePasser {
 	        }
 	        System.out.println("[runNow:new timeStampedmessage]" + Tmes);
 	        clockservice.increment();
-	        
+	        if (Tmes.get_log()){
+	        	sendToLog(Tmes);
+	        }
 //	        System.out.println("[runNow:node sequence number]" + myConfig.getNode(Tmes.get_dest()).get_seqN());
 		    String checkResult = check(Tmes); 
 		    if (checkResult != null) {
@@ -126,7 +128,7 @@ public class MessagePasser {
         try {
             String temp = br.readLine();
             inputParam = temp.split("/");
-            if (inputParam.length < 3) {
+            if (inputParam.length < 4) {
                 //wrong input
                 System.out.println("oops, illegal input.");
                 return null;
@@ -139,6 +141,7 @@ public class MessagePasser {
         }   
         try {
             TimeStampedMessage newM = new TimeStampedMessage(localName, inputParam[0], inputParam[1], inputParam[2]);
+            newM.set_log(inputParam[3]);
             return newM;
         } catch(Exception e) {
             e.printStackTrace();

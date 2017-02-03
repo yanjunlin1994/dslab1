@@ -1,14 +1,14 @@
-# Defines which nodes are used in the system and how to connect to them.
+﻿# Defines which nodes are used in the system and how to connect to them.
 # All names must be unique.
 # No other nodes are known.
 # These names will be used for src and dest addresses for the Message
 # The local node’s name is included in this list
 configuration :
 - name : alice
-  ip   : 128.237.207.118
+  ip   : 128.237.191.131
   port : 12344
 - name : bob
-  ip   : 128.237.163.117
+  ip   : 128.237.220.225
   port : 14255
 - name : charlie
   ip   : 128.237.207.118
