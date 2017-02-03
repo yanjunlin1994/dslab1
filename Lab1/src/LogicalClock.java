@@ -4,8 +4,10 @@
  *
  */
 public class LogicalClock implements ClockService {
-	private int time = 0;
-	
+	private int time;
+	public LogicalClock() {
+	    this.time = 1;
+	}
 	@Override
 	public void increment() {
 		this.time++;

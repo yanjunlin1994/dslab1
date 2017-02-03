@@ -10,6 +10,7 @@ public class VectorClock implements ClockService {
 	public VectorClock(int size, int i){
 		times = new int[size];
 		id = i;
+		times[id] = 1;
 	}
 	/**
 	 * Increments the time in its own position in array.
@@ -45,6 +46,9 @@ public class VectorClock implements ClockService {
 	public int getTimeStamp(int i) {
 		return times[i];
 	}
+	public String toString(){
+        return "[TimeStamp: "+ Arrays.toString(this.times) + "]";
+    }
 	/**
 	 * vector clock doesn't need this method.
 	 * if accidentally used, throw an exception.

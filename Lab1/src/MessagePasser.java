@@ -1,5 +1,6 @@
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -70,49 +71,43 @@ public class MessagePasser {
 	        }
 	        newMes.set_seqNum(myConfig.getNode(newMes.get_dest()).get_seqN());
 	        myConfig.getNode(newMes.get_dest()).incre_seqN();
+	        
+	        
 	        /*send a timestamped message*/
-	        TimeStampedMessage Tmes = (TimeStampedMessage)newMes;
 	        if (this.myClock.equals("vector")){
-	        	Tmes.setId(this.id);
-	        	Tmes.setSize(this.size);
-	        	Tmes.setType(myClock);
-	        	for (int i = 0; i< this.size;i++) {
-	        		Tmes.setTimeStamp(clockservice.getTimeStamp(i),i);
-	        	}
+	            newMes.setVectorMes(clockservice, this.size, this.id, myClock);
+	        } else if (this.myClock.equals("logical")) {
+	            newMes.setLogicalMes(clockservice.getTimeStamp(), myClock);
 	        }
-	        else if (this.myClock.equals("logical")){
-	        	Tmes.setType(myClock);
-	        	Tmes.setTimeStamp(clockservice.getTimeStamp());
-	        }
-	        System.out.println("[runNow:new timeStampedmessage]" + Tmes);
+	        System.out.println("[runNow:new TSM]" + newMes);
 	        clockservice.increment();
-	        if (Tmes.get_log()){
-	        	sendToLog(Tmes);
+	        System.out.println("check clockservice in send" + "("+ clockservice +")");
+	        if (newMes.get_log()){
+	        	sendToLog(newMes);
 	        }
-//	        System.out.println("[runNow:node sequence number]" + myConfig.getNode(Tmes.get_dest()).get_seqN());
-		    String checkResult = check(Tmes); 
+		    String checkResult = check(newMes); 
 		    if (checkResult != null) {
 		        if (checkResult.equals("drop")) {
 		            continue;
 		        } else if (checkResult.equals("duplicate")) {
-		            TimeStampedMessage clone = (TimeStampedMessage)Tmes.clone();
-		            send(Tmes);
+		            TimeStampedMessage clone = newMes.clone();
+		            send(newMes);
 		            send(clone);
 		            while (!sendDelayQueue.isEmpty()){
 		                TimeStampedMessage msg = sendDelayQueue.poll();
 		            	send(msg);
 		            }
-		        } else if(checkResult.equals("delay")){
-		            sendDelayQueue.offer(Tmes);
-		            
-		        }else {
+		        } else if (checkResult.equals("delay")){
+		            sendDelayQueue.offer(newMes);   
+		        } else {
 		            System.out.println("[ATTENTION]abnormal checkResult" + checkResult); 
 		        }
 		    }
 		    else {
-		    	send(Tmes);
+		        //send directly
+		    	send(newMes);
 	            while (!sendDelayQueue.isEmpty()){
-	            	TimeStampedMessage msg = (TimeStampedMessage)sendDelayQueue.poll();
+	            	TimeStampedMessage msg = sendDelayQueue.poll();
 	            	send(msg);
 	            }
 		    }
@@ -136,9 +131,6 @@ public class MessagePasser {
                 System.out.println("oops, illegal input.");
                 return null;
             }
-//            System.out.println("Okay, so your message to be send --");
-//            System.out.println("destination:" + inputParam[0] + "  kind:" + 
-//                    inputParam[1] + "  content:" + inputParam[2]);
         } catch(Exception e) {
             e.printStackTrace();
         }   
@@ -200,8 +192,7 @@ public class MessagePasser {
             }   
         }   
     }
-	private void sendToLog(TimeStampedMessage newMes) {
-	    
+	private void sendToLog(TimeStampedMessage newMes) {	    
 	    if (newMes == null) {
 	        System.out.println("Message is empty, can't send it");
 	        return;
@@ -210,32 +201,27 @@ public class MessagePasser {
         os = myConfig.get_LoggerOS();
         if (os != null) {
             try {
-            //    System.out.println("[MessagePasser class: send function: using exsiting output stream.]");
-            //    System.out.println("message to be send is:" + newMes);
                 os.writeObject(newMes);
             } catch (IOException e) {
-                e.printStackTrace();
+                myConfig.set_LoggerOS(null);
+                os = null;
             }
-        } else {
-            System.out.println("[MessagePasser class: send function: create new LOG output stream...]");
-            //Node me = myConfig.getNode(myName);
-            //Node he = myConfig.getNode(newMes.get_dest());
+        } 
+        if (os == null) {
             Socket sck = null;
             try {
                 sck = new Socket("localhost",16820);
-//                sck = new Socket("localhost", he.get_port());
-                //System.out.println("succeed");
                 os = new ObjectOutputStream(sck.getOutputStream());
                 myConfig.set_LoggerOS(os);
-                //myConfig.add_OSMap(newMes.get_dest(), os);
-                //System.out.println("message to be send is:" + newMes);
                 os.writeObject(newMes);
-                System.out.println("Ok");
             } catch (IOException e) {
                 if (sck != null) {
                     try {
-                        System.out.println("CLOSE");
-                        sck.close();
+                        System.out.println("set the log os to null");
+                        os.close();
+                        myConfig.set_LoggerOS(null);
+                        
+//                        sck.close();
                     } catch (Exception nestedE) {
                         nestedE.printStackTrace();   
                     }

@@ -22,7 +22,14 @@ public class Message implements Serializable {
 		this.duplicate = false;
 		this.seqNum = 0;
 	}
-	
+	public Message(String s, String d, String k, Object data, boolean dup, int sn) {
+        this.source = s;
+        this.dest = d;
+        this.kind = k;
+        this.payload = data;
+        this.duplicate = dup;
+        this.seqNum = sn;
+    }
 	public String get_source() {
 		return source;
 	}
@@ -79,13 +86,13 @@ public class Message implements Serializable {
 	public String toString() { 
 	    return "[NO." + this.seqNum + "]" + "[source]"+ this.source + " [dest]"+ this.dest +" [kind]"+ this.kind + " [content]" + this.payload;
 	}
-	public Message clone(){
-	    //TODO:
-		Message cl = new Message(this.source,this.dest, this.kind, this.payload);
-		cl.set_duplicate(true);
-		cl.set_seqNum(this.seqNum);
-		return cl;
-	}
+//	public Message clone(){
+//	    //TODO:
+//		Message cl = new Message(this.source,this.dest, this.kind, this.payload);
+//		cl.set_duplicate(true);
+//		cl.set_seqNum(this.seqNum);
+//		return cl;
+//	}
 
 
 }

@@ -1,4 +1,3 @@
-
 import java.util.Arrays;
 import java.io.Serializable;
 import java.util.*;
@@ -9,15 +8,16 @@ import java.util.*;
  *
  */
 public class TimeStampedMessage extends Message implements Serializable{
-    /** logical timeStamp. */
+    /* logical timeStamp. */
     private int timeStamp;
-    /** vector timeStamp. */
+    
+    /* vector timeStamp. */
     private int[] timeStamps;
-    /** the clock's type is either vector or logical.*/
+    /* the clock's type is either vector or logical.*/
     private String clock_type;
-    /** size of vector array.*/
+    /* size of vector array.*/
     private int size;
-    /** my index in array */
+    /* my index in array */
     private int id;
     private boolean ifLog;
     
@@ -26,6 +26,31 @@ public class TimeStampedMessage extends Message implements Serializable{
      */
     public TimeStampedMessage(String s,String d,String k,Object data) {
         super(s, d, k, data);
+        this.ifLog = false;
+    }
+    public TimeStampedMessage(String s,String d,String k,Object data, boolean dup, int sn) {
+        super(s, d, k, data, dup, sn);
+        this.ifLog = false;
+    }
+    public void setLogicalMes(int st, String ct) {
+        this.timeStamp = st;
+        this.clock_type = ct;
+    }
+    public void setVectorMes(ClockService csv, int sz, int ID, String ct) {
+        this.size = sz;
+        this.id = ID;
+        this.clock_type = ct;
+        this.timeStamps = new int[sz];
+        if (csv == null) {
+            for (int i = 0; i < this.size; i++) {
+                this.timeStamps[i] = 0;
+            }
+        } else {
+            for (int i = 0; i < this.size; i++) {
+                this.timeStamps[i] = csv.getTimeStamp(i);
+            }
+        }
+        
     }
     /**
      * set the type either vector or logical.
@@ -46,7 +71,7 @@ public class TimeStampedMessage extends Message implements Serializable{
     }
     public void setSize(int s){
         this.size = s;
-        this.timeStamps = new int[s];
+        
         return;
     }
     public void setId(int i){
@@ -103,6 +128,14 @@ public class TimeStampedMessage extends Message implements Serializable{
     public int[] getTimeStamps(){
         return timeStamps;
     }
+    public void set_log(String t){
+        if (t.equals("T")){
+            this.ifLog = true;
+        }
+    }
+    public boolean get_log(){
+        return ifLog;
+    }
     /**
      * compare method.
      */
@@ -138,19 +171,26 @@ public class TimeStampedMessage extends Message implements Serializable{
     }
     public String toString() { 
         return  "[clock type:" +  this.clock_type + "]" 
+                + "[ifLog:" +  this.ifLog + "]" 
                 + "[time stamp:"
                 + (this.clock_type.equals("logical") ? this.timeStamp : Arrays.toString(timeStamps))
                 + "]"
                 + "[NO." + this.get_seqNum() + "]" + "[source]"+ this.get_source() + " [dest]"+ this.get_dest() 
                 + " [kind]"+ this.get_kind() + " [content]" + this.get_payload();
     }
-    public void set_log(String t){
-        if (t.equals("T")){
-            this.ifLog = true;
+    
+    public TimeStampedMessage clone(){
+        TimeStampedMessage cl = new TimeStampedMessage(this.get_source(),this.get_dest(), 
+                this.get_kind(), this.get_payload(), true, this.get_seqNum());
+        if (this.clock_type.equals("logical")) {
+            cl.setLogicalMes(this.timeStamp, this.clock_type);
+        } else if (this.clock_type.equals("vector")) {
+            cl.setSize(this.size);
+            cl.setId(this.id);
+            cl.setType(this.clock_type);
+            cl.timeStamps = this.timeStamps.clone();
         }
-    }
-    public boolean get_log(){
-        return ifLog;
+        return cl;
     }
 
     

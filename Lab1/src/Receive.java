@@ -36,6 +36,7 @@ public class Receive implements Runnable{
         if (!receiveQueue.isEmpty()){
             msg = receiveQueue.poll();
             this.clockservice.Synchronize(msg);
+            System.out.println("check clockservice in receive" + "("+ clockservice +")");
         }
         return msg;
     }
