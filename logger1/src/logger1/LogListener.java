@@ -19,8 +19,8 @@ public class LogListener implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("[log is listening...]");
-            ServerSocket listener = new ServerSocket(16820);
+            System.out.println("[" + this.logName + " is listening...]");
+            ServerSocket listener = new ServerSocket(916820);
             while (true) {
                 Socket socket = null;
                 try {
