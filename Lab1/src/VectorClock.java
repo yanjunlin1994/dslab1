@@ -23,7 +23,7 @@ public class VectorClock implements ClockService {
      * Returns time in my own position in array.
      */
 	@Override
-	public Integer getTimeStamp() {
+	public int getTimeStamp() {
 		return times[id];
 	}
 	/**
@@ -42,17 +42,13 @@ public class VectorClock implements ClockService {
 	 * Gets ith element's time stamp.
 	 */
 	@Override
-	public Integer getTimeStamp(int i) {
+	public int getTimeStamp(int i) {
 		return times[i];
 	}
 	/**
 	 * vector clock doesn't need this method.
 	 * if accidentally used, throw an exception.
 	 */
-	@Override
-	public int compare(int m1, int m2) {
-	    throw new RuntimeException("error in VectorClock class's compare method");
-	}
 	/**
 	 * Returns:
 	 * flag = 1; m1 > m2;
@@ -60,7 +56,6 @@ public class VectorClock implements ClockService {
 	 * flag = -1; m1 < m2;
 	 * 
 	 */
-	@Override
 	public int compare(int[] m1, int[] m2) {
 		int flag = 0;
 		for (int i = 0;i < m1.length; i++){

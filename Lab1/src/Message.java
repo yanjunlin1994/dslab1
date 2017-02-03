@@ -80,6 +80,7 @@ public class Message implements Serializable {
 	    return "[NO." + this.seqNum + "]" + "[source]"+ this.source + " [dest]"+ this.dest +" [kind]"+ this.kind + " [content]" + this.payload;
 	}
 	public Message clone(){
+	    //TODO:
 		Message cl = new Message(this.source,this.dest, this.kind, this.payload);
 		cl.set_duplicate(true);
 		cl.set_seqNum(this.seqNum);

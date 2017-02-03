@@ -22,7 +22,7 @@ public class MessagePasser {
 	private Queue<Message> receiveQueue;
 	/** MessagePasser's receive delay queue. */
     private Queue<Message> receiveDelayQueue;
-    /*Clock type for this process can be logic or vector*/
+    /*Clock type for this process can be logical or vector*/
     private String myClock;
     /*Clock service for this process*/
     private ClockService clockservice;
@@ -77,7 +77,7 @@ public class MessagePasser {
 	        	}
 	        	
 	        }
-	        else if (this.myClock.equals("logic")){
+	        else if (this.myClock.equals("logical")){
 	        	Tmes.setType(myClock);
 	        	Tmes.setTimeStamp(clockservice.getTimeStamp());
 	        }

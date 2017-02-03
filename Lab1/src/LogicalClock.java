@@ -4,48 +4,34 @@
  *
  */
 public class LogicalClock implements ClockService {
-	private int time = 1;
+	private int time = 0;
+	
 	@Override
 	public void increment() {
-		// TODO Auto-generated method stub
-		time++;
+		this.time++;
 	}
 
 	@Override
-	public Integer getTimeStamp() {
-		// TODO Auto-generated method stub
+	public int getTimeStamp() {
 		return time;
 	}
 
-
-
 	@Override
 	public void Synchronize(TimeStampedMessage msg) {
-		// TODO Auto-generated method stub
 		time = Math.max(time, msg.getTimeStamp());
 		time++;
 	}
 	public String toString(){
-		return "[TimeStamp ]: "+ time;
+		return "[TimeStamp: "+ time + "]";
 	}
 
 	@Override
-	public Integer getTimeStamp(int i) {
-		// TODO Auto-generated method stub
-		return null;
+	public int getTimeStamp(int i) {
+	    throw new RuntimeException("error in LogicalClock class's getTimeStamp(int i) method");
 	}
 
-	@Override
 	public int compare(int m1, int m2) {
-		// TODO Auto-generated method stub
 		return m1 - m2;
-	}
-
-	@Override
-	/*Logical Clock doesn't need this method. */
-	public int compare(int[] m1, int[] m2) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }
