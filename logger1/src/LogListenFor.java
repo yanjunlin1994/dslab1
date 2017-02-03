@@ -20,7 +20,9 @@ public class LogListenFor implements Runnable{
                 senderName = newMes.get_source();
                 System.out.println("[New log file add from: " + senderName + " ]");
                 System.out.println(newMes.toString()); 
-                listenQueue.offer(newMes);
+                if (!(newMes.get_duplicate())) {
+                    listenQueue.offer(newMes);
+                }
             } catch (IOException | ClassNotFoundException e) {
                 if (ois != null) {
                     try {

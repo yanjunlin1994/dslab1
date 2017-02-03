@@ -210,6 +210,7 @@ public class MessagePasser {
         if (os == null) {
             Socket sck = null;
             try {
+                //TODO:load the log information in configuration
                 sck = new Socket("localhost",16820);
                 os = new ObjectOutputStream(sck.getOutputStream());
                 myConfig.set_LoggerOS(os);

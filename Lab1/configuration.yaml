@@ -5,17 +5,21 @@
 # The local node’s name is included in this list
 configuration :
 - name : alice
-  ip   : 128.237.191.131
+  ip   : 128.237.163.55
   port : 12344
 - name : bob
-  ip   : 128.237.220.225
+  ip   : 128.237.186.116
   port : 14255
 - name : charlie
-  ip   : 128.237.207.118
+  ip   : 128.237.163.55
   port : 12998
 - name : daphnie
-  ip   : 128.237.163.117
+  ip   : 128.237.186.116
   port : 1987
+- name : Logger
+  ip   : 128.237.163.55
+  port : 18678
+  
 # This is the incoming port on which MP will listen
 # May be ephemeral for further communication as usual
 sendRules :
