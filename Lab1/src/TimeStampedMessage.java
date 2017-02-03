@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -6,7 +7,7 @@ import java.util.*;
  * @author Team 3
  *
  */
-public class TimeStampedMessage extends Message{
+public class TimeStampedMessage extends Message implements Serializable{
     /** logical timeStamp. */
 	private int timeStamp;
 	/** vector timeStamp. */

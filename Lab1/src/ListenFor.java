@@ -24,8 +24,8 @@ public class ListenFor implements Runnable{
             try {
                 TimeStampedMessage newMes = (TimeStampedMessage)ois.readObject();
                 senderName = newMes.get_source();
-//                System.out.println("New message! --");
-//                System.out.println(newMes.toString());   
+                System.out.println("New message! --");
+                System.out.println(newMes.toString());   
            
                 String checkResult = checkReceiveRule(newMes,myConfig);
                 if (checkResult != null) {

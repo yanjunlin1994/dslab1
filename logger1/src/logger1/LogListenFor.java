@@ -1,5 +1,4 @@
 package logger1;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Queue;
@@ -21,19 +20,11 @@ public class LogListenFor implements Runnable{
                 senderName = newMes.get_source();
                 System.out.println("[New log file add from: " + senderName + " ]");
                 System.out.println(newMes.toString()); 
-                listenQueue.offer(newMes);
+//                listenQueue.offer(newMes);
             } catch (IOException | ClassNotFoundException e) {
-                if (ois != null) {
-                    try {
-                        System.out.println("close the object input stream and the socket");
-                        ois.close(); 
-                        return;
-                    } catch (Exception nestedE) {
-                        nestedE.printStackTrace();   
-                    }
-                } else {
+                
                     e.printStackTrace();
-                } 
+                
             } 
         }
     }

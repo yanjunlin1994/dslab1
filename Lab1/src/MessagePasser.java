@@ -65,6 +65,9 @@ public class MessagePasser {
 	public void runNow(){
 	    while(true) {	    	
 	        TimeStampedMessage newMes = this.enterParameter(myName);
+	        if (newMes == null) {
+	            continue;
+	        }
 	        newMes.set_seqNum(myConfig.getNode(newMes.get_dest()).get_seqN());
 	        myConfig.getNode(newMes.get_dest()).incre_seqN();
 	        /*send a timestamped message*/
@@ -176,8 +179,8 @@ public class MessagePasser {
             Node he = myConfig.getNode(newMes.get_dest());
             Socket sck = null;
             try {
-                sck = new Socket(he.get_ip(), he.get_port());
-//                sck = new Socket("localhost", he.get_port());
+//                sck = new Socket(he.get_ip(), he.get_port());
+                sck = new Socket("localhost", he.get_port());
                 System.out.println("succeed");
                 os = new ObjectOutputStream(sck.getOutputStream());
                 myConfig.add_OSMap(newMes.get_dest(), os);
@@ -214,7 +217,7 @@ public class MessagePasser {
                 e.printStackTrace();
             }
         } else {
-            //System.out.println("[MessagePasser class: send function: create new output stream...]");
+            System.out.println("[MessagePasser class: send function: create new LOG output stream...]");
             //Node me = myConfig.getNode(myName);
             //Node he = myConfig.getNode(newMes.get_dest());
             Socket sck = null;
@@ -227,9 +230,11 @@ public class MessagePasser {
                 //myConfig.add_OSMap(newMes.get_dest(), os);
                 //System.out.println("message to be send is:" + newMes);
                 os.writeObject(newMes);
+                System.out.println("Ok");
             } catch (IOException e) {
                 if (sck != null) {
                     try {
+                        System.out.println("CLOSE");
                         sck.close();
                     } catch (Exception nestedE) {
                         nestedE.printStackTrace();   
