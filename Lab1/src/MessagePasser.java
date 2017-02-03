@@ -17,11 +17,11 @@ public class MessagePasser {
 	/** MessagePasser's local name. */
 	private String myName;
 	/** MessagePasser's send queue. */
-	private Queue<Message> sendDelayQueue;
+	private Queue<TimeStampedMessage> sendDelayQueue;
 	/** MessagePasser's receive queue. */
-	private Queue<Message> receiveQueue;
+	private Queue<TimeStampedMessage> receiveQueue;
 	/** MessagePasser's receive delay queue. */
-    private Queue<Message> receiveDelayQueue;
+    private Queue<TimeStampedMessage> receiveDelayQueue;
     /*Clock type for this process can be logical or vector*/
     private String myClock;
     /*Clock service for this process*/
@@ -38,9 +38,9 @@ public class MessagePasser {
 	public MessagePasser(String configuration_filename, String local_name, String clock_name) {
 	    this.myName = local_name;
 	    this.myClock = clock_name;
-	    this.sendDelayQueue = new ArrayDeque<Message>(10);
-	    this.receiveQueue = new LinkedList<Message>();
-	    this.receiveDelayQueue = new ArrayDeque<Message>(10);
+	    this.sendDelayQueue = new ArrayDeque<TimeStampedMessage>(10);
+	    this.receiveQueue = new LinkedList<TimeStampedMessage>();
+	    this.receiveDelayQueue = new ArrayDeque<TimeStampedMessage>(10);
 		this.myConfig = new Configuration(configuration_filename);
 		this.size = myConfig.get_NodeMap().keySet().size();
 		int counter = 0;
@@ -64,9 +64,8 @@ public class MessagePasser {
 	}
 	public void runNow(){
 	    while(true) {	    	
-	        Message newMes = this.enterParameter(myName);
+	        TimeStampedMessage newMes = this.enterParameter(myName);
 	        newMes.set_seqNum(myConfig.getNode(newMes.get_dest()).get_seqN());
-	        System.out.println("[runNow:new message]" + newMes);
 	        myConfig.getNode(newMes.get_dest()).incre_seqN();
 	        /*send a timestamped message*/
 	        TimeStampedMessage Tmes = (TimeStampedMessage)newMes;
@@ -74,29 +73,28 @@ public class MessagePasser {
 	        	Tmes.setId(this.id);
 	        	Tmes.setSize(this.size);
 	        	Tmes.setType(myClock);
-	        	for (int i = 0; i<this.size;i++){
+	        	for (int i = 0; i< this.size;i++) {
 	        		Tmes.setTimeStamp(clockservice.getTimeStamp(i),i);
 	        	}
-	        	
 	        }
 	        else if (this.myClock.equals("logical")){
 	        	Tmes.setType(myClock);
 	        	Tmes.setTimeStamp(clockservice.getTimeStamp());
 	        }
-	        
+	        System.out.println("[runNow:new timeStampedmessage]" + Tmes);
 	        clockservice.increment();
 	        
-	        System.out.println("[runNow:node sequence number]" + myConfig.getNode(Tmes.get_dest()).get_seqN());
+//	        System.out.println("[runNow:node sequence number]" + myConfig.getNode(Tmes.get_dest()).get_seqN());
 		    String checkResult = check(Tmes); 
 		    if (checkResult != null) {
 		        if (checkResult.equals("drop")) {
 		            continue;
 		        } else if (checkResult.equals("duplicate")) {
-		        	Message clone = Tmes.clone();
+		            TimeStampedMessage clone = (TimeStampedMessage)Tmes.clone();
 		            send(Tmes);
 		            send(clone);
 		            while (!sendDelayQueue.isEmpty()){
-		            	Message msg = sendDelayQueue.poll();
+		                TimeStampedMessage msg = sendDelayQueue.poll();
 		            	send(msg);
 		            }
 		        } else if(checkResult.equals("delay")){
@@ -109,7 +107,7 @@ public class MessagePasser {
 		    else {
 		    	send(Tmes);
 	            while (!sendDelayQueue.isEmpty()){
-	            	Message msg = sendDelayQueue.poll();
+	            	TimeStampedMessage msg = (TimeStampedMessage)sendDelayQueue.poll();
 	            	send(msg);
 	            }
 		    }
@@ -119,7 +117,7 @@ public class MessagePasser {
      * Construct the message from input parameters.
      * @return the message constructed from input parameters.
      */
-	private Message enterParameter(String localName) {
+	private TimeStampedMessage enterParameter(String localName) {
         System.out.println("Enter destination, "
                 + "message kind and the message content, seperate them with slash :)");
         InputStreamReader isrd = new InputStreamReader(System.in);
@@ -140,7 +138,7 @@ public class MessagePasser {
             e.printStackTrace();
         }   
         try {
-            Message newM = new Message(localName, inputParam[0], inputParam[1], inputParam[2]);
+            TimeStampedMessage newM = new TimeStampedMessage(localName, inputParam[0], inputParam[1], inputParam[2]);
             return newM;
         } catch(Exception e) {
             e.printStackTrace();
@@ -153,7 +151,7 @@ public class MessagePasser {
 	 * @param kind message kind
 	 * @param data the data in message
 	 */
-	private void send(Message newMes) {
+	private void send(TimeStampedMessage newMes) {
 	    System.out.println("[MessagePasser class: send function]");
 	    if (newMes == null) {
 	        System.out.println("Message is empty, can't send it");
@@ -200,7 +198,7 @@ public class MessagePasser {
 	 * check input message against rules in rule list.
 	 * @return actions should be taken.
 	 */
-	private String check(Message newMes) {
+	private String check(TimeStampedMessage newMes) {
 	    System.out.println("[check send message]");
 	    for (Rule r : myConfig.sendRules) {
 	        int result = r.match(newMes);

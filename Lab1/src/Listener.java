@@ -12,9 +12,9 @@ public class Listener implements Runnable{
     private Configuration myConfig;
     /** listener's name. */
     private String localName;
-    private Queue<Message> listenQueue;
-    private Queue<Message> listenDelayQueue;
-    public Listener(Configuration config, String Name, Queue<Message> receiveQueue, Queue<Message> receiveDelayQueue) {
+    private Queue<TimeStampedMessage> listenQueue;
+    private Queue<TimeStampedMessage> listenDelayQueue;
+    public Listener(Configuration config, String Name, Queue<TimeStampedMessage> receiveQueue, Queue<TimeStampedMessage> receiveDelayQueue) {
         this.myConfig = config;
         this.localName = Name;
         this.listenQueue = receiveQueue;

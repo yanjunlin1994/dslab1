@@ -5,10 +5,10 @@ import java.util.Queue;
  *
  */
 public class Receive implements Runnable{
-    private Queue<Message> receiveQueue;
+    private Queue<TimeStampedMessage> receiveQueue;
     private ClockService clockservice;
     
-    public Receive(Queue<Message> receiveQ, ClockService cs) {
+    public Receive(Queue<TimeStampedMessage> receiveQ, ClockService cs) {
         this.receiveQueue = receiveQ;
         this.clockservice = cs;
     }
@@ -34,8 +34,8 @@ public class Receive implements Runnable{
     public synchronized TimeStampedMessage receive(){
         TimeStampedMessage msg = null;
         if (!receiveQueue.isEmpty()){
-            msg = (TimeStampedMessage) receiveQueue.poll();
-            this.clockservice.Synchronize((TimeStampedMessage) msg);
+            msg = receiveQueue.poll();
+            this.clockservice.Synchronize(msg);
         }
         return msg;
     }

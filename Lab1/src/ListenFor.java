@@ -8,11 +8,11 @@ import java.io.IOException;
 public class ListenFor implements Runnable{
     /** the Object Input Stream. */
     private ObjectInputStream ois;
-    private Queue<Message> listenQueue;
-    private Queue<Message> listenDelayQueue;
+    private Queue<TimeStampedMessage> listenQueue;
+    private Queue<TimeStampedMessage> listenDelayQueue;
     private Configuration myConfig;
     private String senderName;
-    public ListenFor(ObjectInputStream oistream, Queue<Message> listenQ, Queue<Message> listendqueue, Configuration c) {
+    public ListenFor(ObjectInputStream oistream, Queue<TimeStampedMessage> listenQ, Queue<TimeStampedMessage> listendqueue, Configuration c) {
         this.ois = oistream;
         this.listenQueue = listenQ;
         this.listenDelayQueue = listendqueue;
@@ -22,7 +22,7 @@ public class ListenFor implements Runnable{
     public synchronized void run() {
         while(true) {
             try {
-                Message newMes = (Message)ois.readObject();
+                TimeStampedMessage newMes = (TimeStampedMessage)ois.readObject();
                 senderName = newMes.get_source();
 //                System.out.println("New message! --");
 //                System.out.println(newMes.toString());   
@@ -35,9 +35,9 @@ public class ListenFor implements Runnable{
                         listenDelayQueue.offer(newMes);   
                     } else if (checkResult.equals("duplicate")) {
                         listenQueue.offer(newMes);
-                        listenQueue.offer(newMes.clone());
+                        listenQueue.offer((TimeStampedMessage)newMes.clone());
 	                    while (!listenDelayQueue.isEmpty()){
-	                        Message msg = listenDelayQueue.poll();
+	                        TimeStampedMessage msg = listenDelayQueue.poll();
 	                        listenQueue.offer(msg);
 	                    }
                         
@@ -49,7 +49,7 @@ public class ListenFor implements Runnable{
                 else {
                     listenQueue.offer(newMes);
                     while (!listenDelayQueue.isEmpty()){
-                        Message msg = listenDelayQueue.poll();
+                        TimeStampedMessage msg = listenDelayQueue.poll();
                         listenQueue.offer(msg);
                     }
                
@@ -70,7 +70,7 @@ public class ListenFor implements Runnable{
             } 
         }
     }
-    public String checkReceiveRule(Message newMes ,Configuration myConfig){
+    public String checkReceiveRule(TimeStampedMessage newMes ,Configuration myConfig){
         for (Rule r : myConfig.receiveRules) {
             int result = r.match(newMes);
             if (result == 1) {
