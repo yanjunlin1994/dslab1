@@ -1,4 +1,4 @@
-package logger1;
+
 import java.util.Comparator;
 
 public class CompareByTimeStamp implements Comparator<TimeStampedMessage>{
