@@ -220,6 +220,7 @@ public class MessagePasser {
             } catch (IOException e) {
                 if (sck != null) {
                     try {
+                    	
                         System.out.println("set the log os to null");
                         os.close();
                         myConfig.set_LoggerOS(null);

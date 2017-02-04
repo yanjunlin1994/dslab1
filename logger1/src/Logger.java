@@ -38,36 +38,41 @@ public class Logger {
         if (messageList.size() > 0) {
             Collections.sort(messageList, new CompareByTimeStamp());
             //TODO:CLOCK TYPE
-            int i = 0;
-            int j = 1;
-            boolean ifC = false;
-            boolean ifbefC = false;
-            while (i < messageList.size() - 1) {
-                while ((j < messageList.size()) && (ifConcurr(this.clockType, messageList.get(i), messageList.get(j)))) {
-                    ifC = true;
-                    if (j - i == 1) {
-                        System.out.println(">>>>>>>>concurrent>>>>>>>>>");
-                        System.out.println(messageList.get(i));
-                    }
-                    System.out.println(messageList.get(j));
-                    j++;
-                }
-                if (ifC == true) {
-                    i = j;
-                    j++;
-                    System.out.println("<<<<<<<<concurrent<<<<<<<<");
-                    ifC = false;
-                    ifbefC = true;
-                } else {
-                    ifbefC = false;
-                    System.out.println(messageList.get(i));
-                    i++;
-                    j++;
-                }
+            for (int i = 0; i<messageList.size()-1;i++){	
+            	for (int j = i+1;j<messageList.size();j++){
+            		if (isConcurrent(clockType, messageList.get(i), messageList.get(j))){
+            			System.out.println(">>>>>> These two message are concurrent>>>>");
+            			System.out.println(messageList.get(i));
+            			System.out.println(messageList.get(j));
+            			System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            		}
+            	}
             }
+            int[] Mark = new int[messageList.size()];
+            for (int i = 0; i<messageList.size();i++){
+            	if(Mark[i]!=1){
+            		ArrayList<TimeStampedMessage> seqList = new ArrayList<TimeStampedMessage>();
+            		seqList.add(messageList.get(i));
+            		for (int j = i + 1;j<messageList.size();j++){
+            			if (!isConcurrent(clockType, seqList.get(seqList.size()-1),messageList.get(j))){
+            				seqList.add(messageList.get(j));
+            				Mark[j] = 1;
+            			}
+            		}
+            		System.out.println(">>>>> These messages are sequential>>>>>>>>");
+            		for (TimeStampedMessage msg : seqList){
+            			System.out.println(msg);
+            		}
+            		//Arrays.fill(Mark, 0);
+            		System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            	}
+            }
+            
+            /*
             if (!ifbefC) {
                 System.out.println(messageList.get(i));
             }
+            */
             
             
 //            Iterator<TimeStampedMessage> itr = messageList.iterator();
@@ -79,7 +84,7 @@ public class Logger {
         }
         
     }
-    private boolean ifConcurr(String clockt, TimeStampedMessage t1, TimeStampedMessage t2) {
+    private boolean isConcurrent(String clockt, TimeStampedMessage t1, TimeStampedMessage t2) {
         if (clockt.equals("vector")) {
             int[] m1 = t1.getTimeStamps();
             int[] m2 = t2.getTimeStamps();
