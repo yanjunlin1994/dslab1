@@ -57,19 +57,24 @@ public class Configuration {
 			if (rule.get("seqNum") != null) {
 			    newRule.set_seqNum((int)rule.get("seqNum"));
 			}
+			if (rule.get("duplicate") != null) {
+                newRule.set_duplicate((boolean)rule.get("duplicate")); 
+            }
 			sendRules.add(newRule);
 		}
 		List<HashMap<String, Object>> rRules = (List<HashMap<String, Object>> )data.get("receiveRules");
 		for (HashMap<String,Object> rule : rRules){
 			Rule newRule = new Rule();
 			newRule.set_action((String)rule.get("action"));
-			newRule.set_src((String)rule.get("src"));
-			if (rule.get("seqNum") != null) {
-			    newRule.set_seqNum((int)rule.get("seqNum"));
-			}
-			if (rule.get("duplicate") != null) {
-			    newRule.set_duplicate((Boolean)rule.get("duplicate")); 
-			}
+            newRule.set_dst((String)rule.get("dest"));
+            newRule.set_src((String)rule.get("src"));
+            newRule.set_kind((String)rule.get("kind"));
+            if (rule.get("seqNum") != null) {
+                newRule.set_seqNum((int)rule.get("seqNum"));
+            }
+            if (rule.get("duplicate") != null) {
+                newRule.set_duplicate((boolean)rule.get("duplicate")); 
+            }
 			
 			receiveRules.add(newRule);
 		}
